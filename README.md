@@ -45,6 +45,8 @@ Once the application is running, you'll be presented with a menu of options to c
 
 ## Contributing
 
+Utilized tools like Chat GPT to help me better understand things that I am having trouble understanding and also to check where I went wrong in my code.
+
 Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue or submit a pull request.
 
 ## License
