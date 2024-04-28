@@ -3,7 +3,6 @@ const inquirer = require('inquirer');
 const fs = require('fs');
 const path = require('path');
 
-// Create a PostgreSQL connection pool
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
@@ -12,9 +11,7 @@ const pool = new Pool({
     port: 5432,
 });
 
-// Function to start the application
 function startApp() {
-    // Display menu options
     inquirer
         .prompt({
             type: 'list',
@@ -32,7 +29,6 @@ function startApp() {
             ]
         })
         .then(answer => {
-            // Handle user choice
             switch (answer.action) {
                 case 'View all departments':
                     viewAllDepartments();
@@ -63,54 +59,43 @@ function startApp() {
         });
 }
 
-// Function to view all departments
 function viewAllDepartments() {
-    // Query database to get all departments
     pool.query('SELECT * FROM department', (err, res) => {
         if (err) {
             console.error('Error fetching departments:', err);
-            return startApp();
+            startApp();
+            return;
         }
-        // Display departments
         console.table(res.rows);
-        // Continue with the app
         startApp();
     });
 }
 
-// Function to view all roles
 function viewAllRoles() {
-    // Query database to get all roles
     pool.query('SELECT * FROM role', (err, res) => {
         if (err) {
             console.error('Error fetching roles:', err);
-            return startApp();
+            startApp();
+            return;
         }
-        // Display roles
         console.table(res.rows);
-        // Continue with the app
         startApp();
     });
 }
 
-// Function to view all employees
 function viewAllEmployees() {
-    // Query database to get all employees
     pool.query('SELECT * FROM employee', (err, res) => {
         if (err) {
             console.error('Error fetching employees:', err);
-            return startApp();
+            startApp();
+            return;
         }
-        // Display employees
         console.table(res.rows);
-        // Continue with the app
         startApp();
     });
 }
 
-// Function to add a department
 function addDepartment() {
-    // Prompt user for department name
     inquirer
         .prompt({
             type: 'input',
@@ -118,22 +103,18 @@ function addDepartment() {
             message: 'Enter the name of the department:'
         })
         .then(answer => {
-            // Insert new department into the database
             pool.query('INSERT INTO department(name) VALUES($1)', [answer.name], (err, res) => {
                 if (err) {
                     console.error('Error adding department:', err);
-                    return startApp();
+                } else {
+                    console.log('Department added successfully!');
                 }
-                console.log('Department added successfully!');
-                // Continue with the app
                 startApp();
             });
         });
 }
 
-// Function to add a role
 function addRole() {
-    // Prompt user for role details
     inquirer
         .prompt([
             {
@@ -153,22 +134,18 @@ function addRole() {
             }
         ])
         .then(answer => {
-            // Insert new role into the database
             pool.query('INSERT INTO role(title, salary, department_id) VALUES($1, $2, $3)', [answer.title, answer.salary, answer.department_id], (err, res) => {
                 if (err) {
                     console.error('Error adding role:', err);
-                    return startApp();
+                } else {
+                    console.log('Role added successfully!');
                 }
-                console.log('Role added successfully!');
-                // Continue with the app
                 startApp();
             });
         });
 }
 
-// Function to add an employee
 function addEmployee() {
-    // Prompt user for employee details
     inquirer
         .prompt([
             {
@@ -193,20 +170,17 @@ function addEmployee() {
             }
         ])
         .then(answer => {
-            // Insert new employee into the database
             pool.query('INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES($1, $2, $3, $4)', [answer.first_name, answer.last_name, answer.role_id, answer.manager_id], (err, res) => {
                 if (err) {
                     console.error('Error adding employee:', err);
-                    return startApp();
+                } else {
+                    console.log('Employee added successfully!');
                 }
-                console.log('Employee added successfully!');
-                // Continue with the app
                 startApp();
             });
         });
 }
 
-// Function to update an employee role
 function updateEmployeeRole() {
     inquirer
         .prompt([
@@ -222,38 +196,34 @@ function updateEmployeeRole() {
             }
         ])
         .then(answer => {
-            // Update employee role in the database
             pool.query(
                 'UPDATE employee SET role_id = $1 WHERE id = $2',
                 [answer.new_role_id, answer.employee_id],
                 (err, res) => {
                     if (err) {
                         console.error('Error updating employee role:', err);
-                        return startApp();
+                    } else {
+                        console.log('Employee role updated successfully!');
                     }
-                    console.log('Employee role updated successfully!');
-                    // Continue with the app
                     startApp();
                 }
             );
         });
 }
 
-// Read the schema.sql file and create database tables
+// Read and execute schema.sql file
 const schemaPath = path.join(__dirname, '..', 'db', 'schema.sql');
 fs.readFile(schemaPath, 'utf8', (err, data) => {
     if (err) {
         console.error('Error reading schema.sql:', err);
         return;
     }
-    // Execute the SQL commands to create database tables
     pool.query(data, (err, res) => {
         if (err) {
             console.error('Error executing schema.sql:', err);
             return;
         }
         console.log('Schema created successfully!');
-        // Start the application after creating the schema
         startApp();
     });
 });
