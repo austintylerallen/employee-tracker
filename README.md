@@ -14,7 +14,7 @@ Employee Tracker is a command-line application built witindex.js and PostgreSQL 
 1. Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/your-username/employee-tracker.git
+git clone https://github.com/austintylerallen/employee-tracker.git
 ```
 2. Install Dependencies:
 
