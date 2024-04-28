@@ -211,19 +211,5 @@ function updateEmployeeRole() {
         });
 }
 
-// Read and execute schema.sql file
-const schemaPath = path.join(__dirname, '..', 'db', 'schema.sql');
-fs.readFile(schemaPath, 'utf8', (err, data) => {
-    if (err) {
-        console.error('Error reading schema.sql:', err);
-        return;
-    }
-    pool.query(data, (err, res) => {
-        if (err) {
-            console.error('Error executing schema.sql:', err);
-            return;
-        }
-        console.log('Schema created successfully!');
-        startApp();
-    });
-});
+// Start the application
+startApp();
